@@ -1,0 +1,315 @@
+<h3>{{ _('Discord Upload') }}</h3>
+
+<form class="form-horizontal" data-bind="submit: function() {}">
+
+    <div class="tabbable">
+        <ul class="nav nav-tabs" data-bind="foreach: tabs">
+            <li data-bind="css: { active: $parent.currentTab() === $index() }">
+                <a href="#" data-bind="click: $parent.switchTab, text: name"></a>
+            </li>
+        </ul>
+
+        <div class="tab-content" data-bind="foreach: tabs">
+            <div class="tab-pane" data-bind="css: { active: $parent.currentTab() === $index() }">
+
+                <!-- Základní nastavení -->
+                <div data-bind="if: $index() === 0">
+                    <div class="control-group">
+                        <label class="control-label" for="settings-botToken">{{ _('Bot Token') }}</label>
+                        <div class="controls">
+                            <input type="password" class="input-block-level" id="settings-botToken"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.bot_token"
+                                   placeholder="MTE4Nz...">
+                            <span class="help-block">
+                                {{ _('Token z <a href="https://discord.com/developers/applications" target="_blank">Discord Developer Portal</a>. Vytvoř novou aplikaci a přidej bota.') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-commandPrefix">{{ _('Prefix příkazů') }}</label>
+                        <div class="controls">
+                            <input type="text" class="input-small" id="settings-commandPrefix" maxlength="5"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.command_prefix">
+                            <span class="help-inline">{{ _('Prefix pro textové příkazy (např. !status)') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-useSlash">{{ _('Slash commands') }}</label>
+                        <div class="controls">
+                            <label class="checkbox">
+                                <input type="checkbox" id="settings-useSlash"
+                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.use_slash_commands">
+                                {{ _('Povolit slash příkazy (/status, /print, atd.)') }}
+                            </label>
+                            <span class="help-block">{{ _('Slash commands se automaticky registrují při spuštění bota. Může trvat až 1 hodinu, než se objeví ve všech serverech.') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-language">{{ _('Jazyk') }}</label>
+                        <div class="controls">
+                            <select id="settings-language"
+                                    data-bind="value: $parent.settings.settings.plugins.discordupload.language">
+                                <option value="cs">{{ _('Čeština') }}</option>
+                                <option value="en">{{ _('English') }}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kanály a oprávnění -->
+                <div data-bind="if: $index() === 1">
+                    <div class="control-group">
+                        <label class="control-label" for="settings-channelIds">{{ _('Povolené kanály') }}</label>
+                        <div class="controls">
+                            <input type="text" class="input-block-level" id="settings-channelIds"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.channel_ids"
+                                   placeholder="123456789,987654321">
+                            <span class="help-block">{{ _('ID kanálů oddělené čárkou. Ponech prázdné pro povolení všech kanálů.') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-roleIds">{{ _('Povolené role') }}</label>
+                        <div class="controls">
+                            <input type="text" class="input-block-level" id="settings-roleIds"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.allowed_role_ids"
+                                   placeholder="123456789,987654321">
+                            <span class="help-block">{{ _('ID rolí, které mohou používat příkazy. Ponech prázdné pro všechny.') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-requireRole">{{ _('Vyžadovat roli') }}</label>
+                        <div class="controls">
+                            <label class="checkbox">
+                                <input type="checkbox" id="settings-requireRole"
+                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.require_role_for_commands">
+                                {{ _('Vyžadovat jednu z povolených rolí pro použití příkazů') }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-adminIds">{{ _('Admin uživatelé') }}</label>
+                        <div class="controls">
+                            <input type="text" class="input-block-level" id="settings-adminIds"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.admin_user_ids"
+                                   placeholder="123456789,987654321">
+                            <span class="help-block">{{ _('ID uživatelů, kteří mohou používat admin příkazy (shutdown atd.)') }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nahrávání souborů -->
+                <div data-bind="if: $index() === 2">
+                    <div class="control-group">
+                        <label class="control-label" for="settings-allowUpload">{{ _('Povolit nahrávání') }}</label>
+                        <div class="controls">
+                            <label class="checkbox">
+                                <input type="checkbox" id="settings-allowUpload"
+                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.allow_file_upload">
+                                {{ _('Povolit nahrávání souborů přes Discord přílohy') }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-exts">{{ _('Povolené přípony') }}</label>
+                        <div class="controls">
+                            <input type="text" class="input-block-level" id="settings-exts"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.allowed_extensions"
+                                   placeholder="gcode,gco,stl,obj,3mf">
+                            <span class="help-block">{{ _('Přípony souborů oddělené čárkou, které lze nahrát.') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-maxSize">{{ _('Max. velikost (MB)') }}</label>
+                        <div class="controls">
+                            <input type="number" class="input-small" id="settings-maxSize" min="1" max="500"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.max_file_size_mb">
+                            <span class="help-inline">{{ _('Maximální velikost souboru v MB') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-uploadPath">{{ _('Cesta pro upload') }}</label>
+                        <div class="controls">
+                            <input type="text" class="input-block-level" id="settings-uploadPath"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.upload_path"
+                                   placeholder="">
+                            <span class="help-block">{{ _('Cesta pro ukládání nahraných souborů. Ponech prázdné pro výchozí umístění OctoPrintu.') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-autoRemove">{{ _('Auto smazání') }}</label>
+                        <div class="controls">
+                            <label class="checkbox">
+                                <input type="checkbox" id="settings-autoRemove"
+                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.auto_remove_after_print">
+                                {{ _('Automaticky smazat soubor po dokončení tisku') }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profily předehřevu -->
+                <div data-bind="if: $index() === 3">
+                    <p class="help-block">{{ _('Nastav profily předehřevu pro různé typy filamentů. Tyto profily pak můžeš používat přes /preheat.') }}</p>
+
+                    <div data-bind="foreach: preheatProfiles">
+                        <div class="control-group preheat-profile">
+                            <div class="controls inline-controls">
+                                <input type="text" class="input-small" maxlength="20"
+                                       data-bind="value: name, attr: { placeholder: 'PLA' }"
+                                       placeholder="PLA">
+                                <input type="number" class="input-mini" min="0" max="500"
+                                       data-bind="value: hotend_temp, attr: { placeholder: '210' }"
+                                       placeholder="210">
+                                <span class="add-on">/</span>
+                                <input type="number" class="input-mini" min="0" max="200"
+                                       data-bind="value: bed_temp, attr: { placeholder: '60' }"
+                                       placeholder="60">
+                                <button class="btn btn-mini btn-danger" data-bind="click: $parent.removePreheatProfile">
+                                    <i class="icon-remove icon-white"></i>
+                                </button>
+                                <span class="help-inline" data-bind="text: displayLabel"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <button class="btn btn-small btn-primary" data-bind="click: addPreheatProfile">
+                                <i class="icon-plus icon-white"></i> {{ _('Přidat profil') }}
+                            </button>
+                            <button class="btn btn-small" data-bind="click: resetPreheatProfiles">
+                                <i class="icon-refresh"></i> {{ _('Obnovit výchozí') }}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upozornění -->
+                <div data-bind="if: $index() === 4">
+                    <div class="control-group">
+                        <label class="control-label" for="settings-notifyComplete">{{ _('Dokončení tisku') }}</label>
+                        <div class="controls">
+                            <label class="checkbox">
+                                <input type="checkbox" id="settings-notifyComplete"
+                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.notify_on_completion">
+                                {{ _('Upozornit při spuštění a dokončení tisku') }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-notifyError">{{ _('Chyby') }}</label>
+                        <div class="controls">
+                            <label class="checkbox">
+                                <input type="checkbox" id="settings-notifyError"
+                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.notify_on_error">
+                                {{ _('Upozornit při chybě tisku nebo tiskárny') }}
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-notifyChannel">{{ _('Kanál pro notifikace') }}</label>
+                        <div class="controls">
+                            <input type="text" class="input-block-level" id="settings-notifyChannel"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.notify_channel_id"
+                                   placeholder="123456789">
+                            <span class="help-block">{{ _('ID kanálu, kam se budou posílat upozornění. Ponech prázdné pro vypnutí notifikací.') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-presence">{{ _('Discord aktivita') }}</label>
+                        <div class="controls">
+                            <label class="checkbox">
+                                <input type="checkbox" id="settings-presence"
+                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.show_status_in_presence">
+                                {{ _('Zobrazovat stav tiskárny v Discord aktivitě bota') }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ovládání -->
+                <div data-bind="if: $index() === 5">
+                    <div class="control-group">
+                        <label class="control-label" for="settings-jogDist">{{ _('Jog vzdálenost') }}</label>
+                        <div class="controls">
+                            <input type="number" class="input-small" id="settings-jogDist" min="0.1" max="500" step="0.1"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.jog_distance">
+                            <span class="help-inline">{{ _('mm - výchozí vzdálenost pro posun os') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-extrudeLen">{{ _('Délka extrude') }}</label>
+                        <div class="controls">
+                            <input type="number" class="input-small" id="settings-extrudeLen" min="0.1" max="1000" step="0.1"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.extrude_length">
+                            <span class="help-inline">{{ _('mm - výchozí délka extrudování') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-extrudeSpeed">{{ _('Rychlost extrude') }}</label>
+                        <div class="controls">
+                            <input type="number" class="input-small" id="settings-extrudeSpeed" min="1" max="500"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.extrude_speed">
+                            <span class="help-inline">{{ _('mm/min - výchozí rychlost extrudování') }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stav a ovládání bota -->
+                <div data-bind="if: $index() === 6">
+                    <div class="control-group">
+                        <div class="controls">
+                            <div class="alert" data-bind="css: botStatusClass, text: botStatusText">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <button class="btn btn-primary" data-bind="click: testBot, enable: !botTesting()">
+                                <i class="icon-signal icon-white"></i>
+                                <span data-bind="text: botTesting() ? 'Testuji...' : '{{ _('Test připojení') }}'"></span>
+                            </button>
+                            <button class="btn btn-warning" data-bind="click: restartBot, enable: !botRestarting()">
+                                <i class="icon-repeat icon-white"></i>
+                                <span data-bind="text: botRestarting() ? 'Restartuji...' : '{{ _('Restartovat bota') }}'"></span>
+                            </button>
+                            <span class="help-inline">{{ _('Po změně tokenu je třeba bota restartovat.') }}</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="controls">
+                            <p class="help-block">
+                                <strong>{{ _('Jak nastavit bota:') }}</strong><br>
+                                1. {{ _('Jdi na') }} <a href="https://discord.com/developers/applications" target="_blank">Discord Developer Portal</a><br>
+                                2. {{ _('Vytvoř novou aplikaci a přidej bota') }}<br>
+                                3. {{ _('Zkopíruj token bota a vlož ho do pole výše') }}<br>
+                                4. {{ _('Povol intenty: SERVER MEMBERS INTENT a MESSAGE CONTENT INTENT') }}<br>
+                                5. {{ _('Pozvi bota na server přes OAuth2 URL generátor (scope: bot + applications.commands)') }}<br>
+                                6. {{ _('Klikni na "Test připojení" pro ověření') }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</form>
