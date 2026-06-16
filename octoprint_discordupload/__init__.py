@@ -1,8 +1,6 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import octoprint.plugin
-import flask
-from .discord_bot import DiscordBot
 
 
 class DiscordUploadPlugin(
@@ -17,6 +15,22 @@ class DiscordUploadPlugin(
 
     def __init__(self):
         self.discord_bot = None
+        self._bot_import_error = None
+
+    def initialize(self):
+        self._try_import_bot()
+
+    def _try_import_bot(self):
+        try:
+            from .discord_bot import DiscordBot
+            self._DiscordBot = DiscordBot
+            self._bot_import_error = None
+        except ImportError as e:
+            self._bot_import_error = str(e)
+            self._logger.warning(
+                "Discord.py is not installed. Discord bot functionality disabled. "
+                "Run: pip install discord.py"
+            )
 
     def on_after_startup(self):
         self._logger.info("Discord Upload Plugin starting...")
@@ -39,8 +53,15 @@ class DiscordUploadPlugin(
             self._start_bot()
 
     def _start_bot(self):
+        if self._bot_import_error:
+            self._logger.warning(
+                "Cannot start Discord bot: {}".format(self._bot_import_error)
+            )
+            return
+
         token = self._settings.get(["bot_token"])
         if token:
+            DiscordBot = self._DiscordBot
             self.discord_bot = DiscordBot(self)
             self.discord_bot.start()
         else:
@@ -137,34 +158,34 @@ class DiscordUploadPlugin(
             if self._settings.get(["notify_on_completion"]):
                 path = payload.get("path", "neznámý soubor")
                 self.discord_bot.send_to_notify_channel(
-                    f":white_check_mark: **Tisk dokončen!**\nSoubor: `{path}`\nČas: {payload.get('time', '?')}s"
+                    ":white_check_mark: **Tisk dokončen!**\nSoubor: `{}`\nČas: {}s".format(path, payload.get("time", "?"))
                 )
                 if self._settings.get(["auto_remove_after_print"]):
                     try:
                         self._file_manager.remove_file(("local", path))
-                        self.discord_bot.send_to_notify_channel(f":wastebasket: Soubor `{path}` byl smazán")
+                        self.discord_bot.send_to_notify_channel(":wastebasket: Soubor `{}` byl smazán".format(path))
                     except Exception as e:
-                        self._logger.error(f"Failed to remove file after print: {e}")
+                        self._logger.error("Failed to remove file after print: {}".format(e))
 
         elif event == "PrintFailed":
             if self._settings.get(["notify_on_error"]):
                 path = payload.get("path", "neznámý soubor")
                 self.discord_bot.send_to_notify_channel(
-                    f":x: **Tisk selhal!**\nSoubor: `{path}`"
+                    ":x: **Tisk selhal!**\nSoubor: `{}`".format(path)
                 )
 
         elif event == "PrintStarted":
             if self._settings.get(["notify_on_completion"]):
                 path = payload.get("path", "neznámý soubor")
                 self.discord_bot.send_to_notify_channel(
-                    f":arrow_forward: **Tisk spuštěn!**\nSoubor: `{path}`"
+                    ":arrow_forward: **Tisk spuštěn!**\nSoubor: `{}`".format(path)
                 )
 
         elif event == "Error":
             if self._settings.get(["notify_on_error"]):
                 error = payload.get("error", "neznámá chyba")
                 self.discord_bot.send_to_notify_channel(
-                    f":warning: **Chyba tiskárny!**\n`{error}`"
+                    ":warning: **Chyba tiskárny!**\n`{}`".format(error)
                 )
 
     def get_update_information(self):
