@@ -16,14 +16,14 @@ Lehký OctoPrint plugin, který běží přímo na Raspberry Pi (Zero/3/4/5) ved
 | `/resume` | Obnoví tisk |
 | `/cancel` | Zruší tisk |
 | `/estop` | Nouzové zastavení (M112) |
-| `/home [all\|xy\|z]` | Najetí os do výchozí pozice |
+| `/home [all\|xy\|z\|x\|y]` | Najetí os do výchozí pozice |
 | `/preheat <profil>` | Předehřev podle profilu (PLA, ABS, PETG...) |
 | `/set_temp [hotend] [bed]` | Ruční nastavení teplot |
 | `/files` | Seznam souborů na tiskárně |
 | `/download <soubor>` | Stažení souboru z tiskárny |
 | `/delete <soubor>` | Smazání souboru |
-| `/jog <osa> [mm]` | Posun osou |
-| `/extrude [mm]` | Extrudování/retrakce filamentu |
+| `/jog <osa> [mm] [speed]` | Posun osou (volitelně rychlost) |
+| `/extrude [mm] [speed]` | Extrudování/retrakce filamentu |
 | `/info` | Informace o tiskárně |
 | `/help` | Nápověda |
 | `/shutdown` | Vypnutí systému (jen admin) |

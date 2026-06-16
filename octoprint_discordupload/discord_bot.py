@@ -4,8 +4,6 @@ import asyncio
 import io
 import os
 import threading
-import time
-import mimetypes
 
 import discord
 from discord import app_commands
@@ -347,7 +345,7 @@ class DiscordBot:
             return True
         return channel_id in allowed
 
-    def _get_response_lang(self, key, **kwargs):
+    def _get_response_lang(self, key, *args):
         lang = self._settings.get(["language"])
         strings = {
             "cs": {
@@ -404,15 +402,21 @@ class DiscordBot:
             },
         }
         s = strings.get(lang, strings["cs"]).get(key, key)
-        if kwargs:
+        if args:
             try:
-                return s.format(**kwargs)
-            except KeyError:
+                return s.format(*args)
+            except (KeyError, IndexError):
                 return s
         return s
 
-    def _t(self, key, **kwargs):
-        return self._get_response_lang(key, **kwargs)
+    def _t(self, key, *args):
+        s = self._get_response_lang(key)
+        if args:
+            try:
+                return s.format(*args)
+            except (KeyError, IndexError):
+                return s
+        return s
 
     async def _safe_respond(self, interaction, content=None, embed=None, ephemeral=False):
         kwargs = {}

@@ -58,8 +58,6 @@ class DiscordUploadPlugin(
             "allowed_role_ids": "",
             "admin_user_ids": "",
             "command_prefix": "!",
-            "use_slash_commands": True,
-            "upload_path": "",
             "preheat_profiles": [
                 {"name": "PLA", "hotend_temp": 210, "bed_temp": 60},
                 {"name": "ABS", "hotend_temp": 240, "bed_temp": 100},
@@ -178,7 +176,7 @@ class DiscordUploadPlugin(
                 user="outwo",
                 repo="OctoPrint-DiscordBot",
                 current=self._plugin_version,
-                pip="https://github.com/outwo/OctoPrint-DiscordUpload/archive/{target_version}.zip",
+                pip="https://github.com/outwo/OctoPrint-DiscordBot/archive/{target_version}.zip",
             )
         )
 

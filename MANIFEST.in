@@ -1,0 +1,4 @@
+include octoprint_discordupload/templates/*.jinja2
+include octoprint_discordupload/static/js/*.js
+include octoprint_discordupload/static/css/*.css
+recursive-include octoprint_discordupload *

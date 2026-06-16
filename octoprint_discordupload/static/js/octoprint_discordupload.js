@@ -24,20 +24,46 @@ $(function () {
 
         self.preheatProfiles = ko.observableArray([]);
 
+        self._makeProfile = function (data) {
+            var obs = {
+                name: ko.observable(data.name || ""),
+                hotend_temp: ko.observable(data.hotend_temp || 200),
+                bed_temp: ko.observable(data.bed_temp || 60),
+            };
+            obs.displayLabel = ko.pureComputed(function () {
+                var n = obs.name();
+                var h = obs.hotend_temp();
+                var b = obs.bed_temp();
+                if (!n) return gettext("(nevyplněno)");
+                return n + " - " + h + "°C / " + b + "°C";
+            });
+            return obs;
+        };
+
         self.onBeforeBinding = function () {
             var profiles = self.settingsViewModel.settings.plugins.discordupload.preheat_profiles;
-            self.preheatProfiles(profiles());
+            var raw = profiles();
+            var converted = [];
+            for (var i = 0; i < raw.length; i++) {
+                converted.push(self._makeProfile(raw[i]));
+            }
+            self.preheatProfiles(converted);
+
             self.preheatProfiles.subscribe(function (newVal) {
-                profiles(newVal);
+                var plain = [];
+                for (var i = 0; i < newVal.length; i++) {
+                    plain.push({
+                        name: ko.unwrap(newVal[i].name),
+                        hotend_temp: ko.unwrap(newVal[i].hotend_temp),
+                        bed_temp: ko.unwrap(newVal[i].bed_temp),
+                    });
+                }
+                profiles(plain);
             });
         };
 
         self.addPreheatProfile = function () {
-            self.preheatProfiles.push({
-                name: ko.observable(""),
-                hotend_temp: ko.observable(200),
-                bed_temp: ko.observable(60),
-            });
+            self.preheatProfiles.push(self._makeProfile({ name: "", hotend_temp: 200, bed_temp: 60 }));
         };
 
         self.removePreheatProfile = function (profile) {
@@ -46,12 +72,12 @@ $(function () {
 
         self.resetPreheatProfiles = function () {
             var defaults = [
-                { name: ko.observable("PLA"), hotend_temp: ko.observable(210), bed_temp: ko.observable(60) },
-                { name: ko.observable("ABS"), hotend_temp: ko.observable(240), bed_temp: ko.observable(100) },
-                { name: ko.observable("PETG"), hotend_temp: ko.observable(235), bed_temp: ko.observable(80) },
-                { name: ko.observable("TPU"), hotend_temp: ko.observable(220), bed_temp: ko.observable(60) },
-                { name: ko.observable("ASA"), hotend_temp: ko.observable(250), bed_temp: ko.observable(95) },
-                { name: ko.observable("PC"), hotend_temp: ko.observable(270), bed_temp: ko.observable(105) },
+                self._makeProfile({ name: "PLA", hotend_temp: 210, bed_temp: 60 }),
+                self._makeProfile({ name: "ABS", hotend_temp: 240, bed_temp: 100 }),
+                self._makeProfile({ name: "PETG", hotend_temp: 235, bed_temp: 80 }),
+                self._makeProfile({ name: "TPU", hotend_temp: 220, bed_temp: 60 }),
+                self._makeProfile({ name: "ASA", hotend_temp: 250, bed_temp: 95 }),
+                self._makeProfile({ name: "PC", hotend_temp: 270, bed_temp: 105 }),
             ];
             self.preheatProfiles(defaults);
         };
