@@ -229,13 +229,25 @@
                     </div>
 
                     <div class="control-group">
-                        <label class="control-label" for="settings-presence">{{ _('Discord aktivita') }}</label>
+                        <label class="control-label" for="settings-richPresence">{{ _('Rich Presence') }}</label>
                         <div class="controls">
                             <label class="checkbox">
-                                <input type="checkbox" id="settings-presence"
-                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.show_status_in_presence">
-                                {{ _('Zobrazovat stav tiskárny v Discord aktivitě bota') }}
+                                <input type="checkbox" id="settings-richPresence"
+                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.rich_presence_enabled">
+                                {{ _('Zobrazovat detailní statistiky v Discord aktivitě (automatická aktualizace)') }}
                             </label>
+                            <span class="help-block">
+                                {{ _('Zobrazuje: stav, soubor, průběh, teploty trysky a podložky. Aktualizuje se každou vteřinu.') }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="settings-presenceInterval">{{ _('Interval aktualizace') }}</label>
+                        <div class="controls">
+                            <input type="number" class="input-mini" id="settings-presenceInterval" min="1" max="300"
+                                   data-bind="value: $parent.settings.settings.plugins.discordupload.presence_update_interval">
+                            <span class="help-inline">{{ _('sekund (1-300, výchozí 1s)') }}</span>
                         </div>
                     </div>
                 </div>

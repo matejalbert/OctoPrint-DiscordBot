@@ -75,6 +75,8 @@ class DiscordUploadPlugin(
             "notify_channel_id": "",
             "language": "cs",
             "show_status_in_presence": True,
+            "rich_presence_enabled": True,
+            "presence_update_interval": 1,
             "require_role_for_commands": False,
             "allow_file_upload": True,
             "max_file_size_mb": 100,

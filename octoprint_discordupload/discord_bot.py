@@ -42,6 +42,7 @@ class DiscordBot:
         self._thread = None
         self._bot = None
         self._ready_event = threading.Event()
+        self._presence_task = None
 
     def start(self):
         token = self._settings.get(["bot_token"])
@@ -116,17 +117,8 @@ class DiscordBot:
                 self._logger.error("Failed to sync slash commands: {}".format(e))
             self._ready_event.set()
 
-            if self._settings.get(["show_status_in_presence"]):
-                try:
-                    data = self._printer.get_current_data()
-                    state = data.get("state", {}).get("text", "Neznámý")
-                    activity = discord.Activity(
-                        type=discord.ActivityType.watching,
-                        name="3D tiskárna - {}".format(state),
-                    )
-                    await bot.change_presence(activity=activity)
-                except Exception:
-                    pass
+            if self._settings.get(["rich_presence_enabled"]):
+                self._presence_task = bot.loop.create_task(self._presence_updater())
 
         @bot.event
         async def on_message(message):
@@ -219,6 +211,115 @@ class DiscordBot:
         @tree.command(name="shutdown", description="Vypne systém (pouze admin)")
         async def cmd_shutdown(interaction: discord.Interaction):
             await self._cmd_shutdown(interaction)
+
+    async def _presence_updater(self):
+        await self._bot.wait_until_ready()
+        while not self._bot.is_closed():
+            try:
+                if self._settings.get(["rich_presence_enabled"]):
+                    await self._update_presence()
+                elif self._bot.user and self._bot.activity:
+                    await self._bot.change_presence(activity=None)
+            except Exception as e:
+                self._logger.debug("Presence update error: {}".format(e))
+            interval = self._settings.get(["presence_update_interval"]) or 1
+            interval = max(1, min(300, interval))
+            await asyncio.sleep(interval)
+
+    async def _update_presence(self):
+        try:
+            data = self._printer.get_current_data()
+        except Exception:
+            activity = discord.Activity(
+                type=discord.ActivityType.playing,
+                name="🔴 Tiskárna nedostupná",
+            )
+            try:
+                await self._bot.change_presence(activity=activity)
+            except Exception:
+                pass
+            return
+
+        state = data.get("state", {})
+        text = state.get("text", "Neznámý")
+        flags = state.get("flags", {})
+
+        temps = data.get("temperature", {})
+        tool0 = temps.get("tool0", {})
+        bed = temps.get("bed", {})
+
+        hotend_actual = tool0.get("actual", 0)
+        hotend_target = tool0.get("target", 0)
+        bed_actual = bed.get("actual", 0)
+        bed_target = bed.get("target", 0)
+
+        progress = data.get("progress", {})
+        completion = progress.get("completion", 0) or 0
+        print_time_left = progress.get("printTimeLeft", 0) or 0
+        current_file = data.get("job", {}).get("file", {}).get("name", "")
+
+        if flags.get("printing"):
+            m, s = divmod(int(print_time_left), 60)
+            h, m = divmod(m, 60)
+            left_str = ""
+            if h:
+                left_str = "{:d}h{:02d}m".format(h, m)
+            elif m:
+                left_str = "{:d}m".format(m)
+            else:
+                left_str = ""
+
+            parts = ["🖨️ {}".format(current_file[:40])]
+            if completion > 0:
+                parts.append("{:.0f}%".format(completion))
+            if left_str:
+                parts.append("⏱{}".format(left_str))
+            parts.append("🔥{:.0f}°C 🛏{:.0f}°C".format(hotend_actual, bed_actual))
+
+            name = " • ".join(parts)
+
+            activity = discord.Activity(
+                type=discord.ActivityType.playing,
+                name=name[:128],
+            )
+
+        elif flags.get("paused"):
+            parts = ["⏸️ Pozastaveno"]
+            if current_file:
+                parts.append(current_file[:30])
+            parts.append("🔥{:.0f}°C 🛏{:.0f}°C".format(hotend_actual, bed_actual))
+            name = " • ".join(parts)
+
+            activity = discord.Activity(
+                type=discord.ActivityType.playing,
+                name=name[:128],
+            )
+
+        elif text in ("Operational", "Připraven"):
+            parts = ["🟢 Připraven"]
+            if hotend_target > 0 or bed_target > 0:
+                parts.append("🔥{:.0f}/{:.0f}°C 🛏{:.0f}/{:.0f}°C".format(
+                    hotend_actual, hotend_target, bed_actual, bed_target
+                ))
+            elif hotend_actual > 30:
+                parts.append("🔥{:.0f}°C 🛏{:.0f}°C".format(hotend_actual, bed_actual))
+            name = " • ".join(parts)
+
+            activity = discord.Activity(
+                type=discord.ActivityType.playing,
+                name=name[:128],
+            )
+
+        else:
+            activity = discord.Activity(
+                type=discord.ActivityType.playing,
+                name="3D tiskárna - {}".format(text),
+            )
+
+        try:
+            await self._bot.change_presence(activity=activity)
+        except Exception:
+            pass
 
     def _is_admin(self, user_id):
         admin_ids = self._settings.get(["admin_user_ids"]).strip()
