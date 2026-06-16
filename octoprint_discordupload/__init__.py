@@ -173,10 +173,10 @@ class DiscordUploadPlugin(
                 displayName="Discord Upload",
                 displayVersion=self._plugin_version,
                 type="github_release",
-                user="outwo",
+                user="matejalbert",
                 repo="OctoPrint-DiscordBot",
                 current=self._plugin_version,
-                pip="https://github.com/outwo/OctoPrint-DiscordBot/archive/{target_version}.zip",
+                pip="https://github.com/matejalbert/OctoPrint-DiscordBot/archive/{target_version}.zip",
             )
         )
 

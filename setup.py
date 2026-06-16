@@ -8,7 +8,7 @@ plugin_version = "1.0.0"
 plugin_description = "Ovládejte svou 3D tiskárnu přes Discord - nahrávejte soubory, spouštějte tisk a sledujte stav"
 plugin_author = "Your Name"
 plugin_author_email = ""
-plugin_url = "https://github.com/outwo/OctoPrint-DiscordBot"
+plugin_url = "https://github.com/matejalbert/OctoPrint-DiscordBot"
 plugin_license = "AGPLv3"
 plugin_requires = ["discord.py>=2.3.0"]
 

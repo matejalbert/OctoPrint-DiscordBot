@@ -44,14 +44,14 @@ Pošlete soubor (.gcode, .stl, .obj, .3mf) jako přílohu v Discord chatu — bo
 ### Přes Plugin Manager (doporučeno)
 
 1. V OctoPrint jděte do **Settings** → **Plugin Manager** → **Get More**
-2. Vložte URL: `https://github.com/outwo/OctoPrint-DiscordBot/releases/latest/download/master.zip`
+2. Vložte URL: `https://github.com/matejalbert/OctoPrint-DiscordBot/releases/latest/download/master.zip`
 3. Klikněte **Install** a restartujte OctoPrint
 
 ### Ručně
 
 ```bash
 cd ~
-git clone https://github.com/outwo/OctoPrint-DiscordBot.git
+git clone https://github.com/matejalbert/OctoPrint-DiscordBot.git
 cd OctoPrint-DiscordBot
 pip install -e .
 ```
@@ -99,7 +99,7 @@ Plugin má 7 záložek v nastavení OctoPrintu:
 ### Lokální vývoj
 
 ```bash
-git clone https://github.com/outwo/OctoPrint-DiscordBot.git
+git clone https://github.com/matejalbert/OctoPrint-DiscordBot.git
 cd OctoPrint-DiscordBot
 pip install -e .[dev]
 ```
