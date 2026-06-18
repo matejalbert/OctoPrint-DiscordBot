@@ -3,7 +3,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import octoprint.plugin
 
 
-class DiscordUploadPlugin(
+class DiscordBotPlugin(
     octoprint.plugin.StartupPlugin,
     octoprint.plugin.ShutdownPlugin,
     octoprint.plugin.SettingsPlugin,
@@ -16,6 +16,7 @@ class DiscordUploadPlugin(
     def __init__(self):
         self.discord_bot = None
         self._bot_import_error = None
+        self._DiscordBot = None
 
     def initialize(self):
         self._try_import_bot()
@@ -31,17 +32,16 @@ class DiscordUploadPlugin(
                 "Discord.py is not installed. Discord bot functionality disabled. "
                 "Run: pip install discord.py"
             )
+        except Exception as e:
+            self._bot_import_error = str(e)
+            self._logger.error("Failed to import DiscordBot: {}".format(e))
 
     def on_after_startup(self):
-        self._logger.info("Discord Upload Plugin starting...")
+        self._logger.info("Discord Bot Plugin starting...")
         self._start_bot()
 
     def on_shutdown(self):
         self._stop_bot()
-
-    def on_settings_cleanup(self):
-        self._stop_bot()
-        self._start_bot()
 
     def on_settings_save(self, data):
         old_token = self._settings.get(["bot_token"])
@@ -59,17 +59,31 @@ class DiscordUploadPlugin(
             )
             return
 
+        if self._DiscordBot is None:
+            self._try_import_bot()
+            if self._DiscordBot is None:
+                return
+
         token = self._settings.get(["bot_token"])
         if token:
-            DiscordBot = self._DiscordBot
-            self.discord_bot = DiscordBot(self)
-            self.discord_bot.start()
+            try:
+                self.discord_bot = self._DiscordBot(self)
+                self.discord_bot.start()
+            except Exception as e:
+                self._logger.error("Failed to start Discord bot: {}".format(e))
+                self.discord_bot = None
         else:
-            self._logger.warning("No Discord bot token configured - plugin loaded but inactive. Configure it in settings.")
+            self._logger.warning(
+                "No Discord bot token configured - plugin loaded but inactive. "
+                "Configure it in Settings > Discord Bot."
+            )
 
     def _stop_bot(self):
         if self.discord_bot:
-            self.discord_bot.stop()
+            try:
+                self.discord_bot.stop()
+            except Exception as e:
+                self._logger.error("Error stopping bot: {}".format(e))
             self.discord_bot = None
 
     def get_settings_defaults(self):
@@ -109,13 +123,13 @@ class DiscordUploadPlugin(
 
     def get_template_configs(self):
         return [
-            dict(type="settings", name="Discord Upload", custom_bindings=True)
+            dict(type="settings", name="Discord Bot", custom_bindings=True)
         ]
 
     def get_assets(self):
         return dict(
-            js=["js/octoprint_discordupload.js"],
-            css=["css/octoprint_discordupload.css"],
+            js=["js/octoprint_discordbot.js"],
+            css=["css/octoprint_discordbot.css"],
         )
 
     def get_api_commands(self):
@@ -158,12 +172,16 @@ class DiscordUploadPlugin(
             if self._settings.get(["notify_on_completion"]):
                 path = payload.get("path", "neznámý soubor")
                 self.discord_bot.send_to_notify_channel(
-                    ":white_check_mark: **Tisk dokončen!**\nSoubor: `{}`\nČas: {}s".format(path, payload.get("time", "?"))
+                    ":white_check_mark: **Tisk dokončen!**\nSoubor: `{}`\nČas: {}s".format(
+                        path, payload.get("time", "?")
+                    )
                 )
                 if self._settings.get(["auto_remove_after_print"]):
                     try:
                         self._file_manager.remove_file(("local", path))
-                        self.discord_bot.send_to_notify_channel(":wastebasket: Soubor `{}` byl smazán".format(path))
+                        self.discord_bot.send_to_notify_channel(
+                            ":wastebasket: Soubor `{}` byl smazán".format(path)
+                        )
                     except Exception as e:
                         self._logger.error("Failed to remove file after print: {}".format(e))
 
@@ -190,8 +208,8 @@ class DiscordUploadPlugin(
 
     def get_update_information(self):
         return dict(
-            discordupload=dict(
-                displayName="Discord Upload",
+            discordbot=dict(
+                displayName="Discord Bot",
                 displayVersion=self._plugin_version,
                 type="github_release",
                 user="matejalbert",
@@ -202,6 +220,6 @@ class DiscordUploadPlugin(
         )
 
 
-__plugin_name__ = "Discord Upload"
-__plugin_python__ = ">=3.7,<4"
-__plugin_implementation__ = DiscordUploadPlugin()
+__plugin_name__ = "Discord Bot"
+__plugin_pythoncompat__ = ">=3.7,<4"
+__plugin_implementation__ = DiscordBotPlugin()

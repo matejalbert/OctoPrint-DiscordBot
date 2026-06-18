@@ -1,4 +1,4 @@
-<h3>{{ _('Discord Upload') }}</h3>
+<h3>{{ _('Discord Bot') }}</h3>
 
 <form class="form-horizontal" data-bind="submit: function() {}">
 
@@ -18,7 +18,7 @@
                         <label class="control-label" for="settings-botToken">{{ _('Bot Token') }}</label>
                         <div class="controls">
                             <input type="password" class="input-block-level" id="settings-botToken"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.bot_token"
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.bot_token"
                                    placeholder="MTE4Nz...">
                             <span class="help-block">
                                 {{ _('Token z <a href="https://discord.com/developers/applications" target="_blank">Discord Developer Portal</a>. Vytvoř novou aplikaci a přidej bota.') }}
@@ -30,7 +30,7 @@
                         <label class="control-label" for="settings-commandPrefix">{{ _('Prefix příkazů') }}</label>
                         <div class="controls">
                             <input type="text" class="input-small" id="settings-commandPrefix" maxlength="5"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.command_prefix">
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.command_prefix">
                             <span class="help-inline">{{ _('Prefix pro textové příkazy (např. !status)') }}</span>
                         </div>
                     </div>
@@ -39,7 +39,7 @@
                         <label class="control-label" for="settings-language">{{ _('Jazyk') }}</label>
                         <div class="controls">
                             <select id="settings-language"
-                                    data-bind="value: $parent.settings.settings.plugins.discordupload.language">
+                                    data-bind="value: $parent.settings.settings.plugins.discordbot.language">
                                 <option value="cs">{{ _('Čeština') }}</option>
                                 <option value="en">{{ _('English') }}</option>
                             </select>
@@ -53,7 +53,7 @@
                         <label class="control-label" for="settings-channelIds">{{ _('Povolené kanály') }}</label>
                         <div class="controls">
                             <input type="text" class="input-block-level" id="settings-channelIds"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.channel_ids"
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.channel_ids"
                                    placeholder="123456789,987654321">
                             <span class="help-block">{{ _('ID kanálů oddělené čárkou. Ponech prázdné pro povolení všech kanálů.') }}</span>
                         </div>
@@ -63,7 +63,7 @@
                         <label class="control-label" for="settings-roleIds">{{ _('Povolené role') }}</label>
                         <div class="controls">
                             <input type="text" class="input-block-level" id="settings-roleIds"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.allowed_role_ids"
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.allowed_role_ids"
                                    placeholder="123456789,987654321">
                             <span class="help-block">{{ _('ID rolí, které mohou používat příkazy. Ponech prázdné pro všechny.') }}</span>
                         </div>
@@ -74,7 +74,7 @@
                         <div class="controls">
                             <label class="checkbox">
                                 <input type="checkbox" id="settings-requireRole"
-                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.require_role_for_commands">
+                                       data-bind="checked: $parent.settings.settings.plugins.discordbot.require_role_for_commands">
                                 {{ _('Vyžadovat jednu z povolených rolí pro použití příkazů') }}
                             </label>
                         </div>
@@ -84,7 +84,7 @@
                         <label class="control-label" for="settings-adminIds">{{ _('Admin uživatelé') }}</label>
                         <div class="controls">
                             <input type="text" class="input-block-level" id="settings-adminIds"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.admin_user_ids"
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.admin_user_ids"
                                    placeholder="123456789,987654321">
                             <span class="help-block">{{ _('ID uživatelů, kteří mohou používat admin příkazy (shutdown atd.)') }}</span>
                         </div>
@@ -98,7 +98,7 @@
                         <div class="controls">
                             <label class="checkbox">
                                 <input type="checkbox" id="settings-allowUpload"
-                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.allow_file_upload">
+                                       data-bind="checked: $parent.settings.settings.plugins.discordbot.allow_file_upload">
                                 {{ _('Povolit nahrávání souborů přes Discord přílohy') }}
                             </label>
                         </div>
@@ -108,7 +108,7 @@
                         <label class="control-label" for="settings-exts">{{ _('Povolené přípony') }}</label>
                         <div class="controls">
                             <input type="text" class="input-block-level" id="settings-exts"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.allowed_extensions"
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.allowed_extensions"
                                    placeholder="gcode,gco,stl,obj,3mf">
                             <span class="help-block">{{ _('Přípony souborů oddělené čárkou, které lze nahrát.') }}</span>
                         </div>
@@ -118,7 +118,7 @@
                         <label class="control-label" for="settings-maxSize">{{ _('Max. velikost (MB)') }}</label>
                         <div class="controls">
                             <input type="number" class="input-small" id="settings-maxSize" min="1" max="500"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.max_file_size_mb">
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.max_file_size_mb">
                             <span class="help-inline">{{ _('Maximální velikost souboru v MB') }}</span>
                         </div>
                     </div>
@@ -128,7 +128,7 @@
                         <div class="controls">
                             <label class="checkbox">
                                 <input type="checkbox" id="settings-autoRemove"
-                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.auto_remove_after_print">
+                                       data-bind="checked: $parent.settings.settings.plugins.discordbot.auto_remove_after_print">
                                 {{ _('Automaticky smazat soubor po dokončení tisku') }}
                             </label>
                         </div>
@@ -179,7 +179,7 @@
                         <div class="controls">
                             <label class="checkbox">
                                 <input type="checkbox" id="settings-notifyComplete"
-                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.notify_on_completion">
+                                       data-bind="checked: $parent.settings.settings.plugins.discordbot.notify_on_completion">
                                 {{ _('Upozornit při spuštění a dokončení tisku') }}
                             </label>
                         </div>
@@ -190,7 +190,7 @@
                         <div class="controls">
                             <label class="checkbox">
                                 <input type="checkbox" id="settings-notifyError"
-                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.notify_on_error">
+                                       data-bind="checked: $parent.settings.settings.plugins.discordbot.notify_on_error">
                                 {{ _('Upozornit při chybě tisku nebo tiskárny') }}
                             </label>
                         </div>
@@ -200,7 +200,7 @@
                         <label class="control-label" for="settings-notifyChannel">{{ _('Kanál pro notifikace') }}</label>
                         <div class="controls">
                             <input type="text" class="input-block-level" id="settings-notifyChannel"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.notify_channel_id"
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.notify_channel_id"
                                    placeholder="123456789">
                             <span class="help-block">{{ _('ID kanálu, kam se budou posílat upozornění. Ponech prázdné pro vypnutí notifikací.') }}</span>
                         </div>
@@ -211,7 +211,7 @@
                         <div class="controls">
                             <label class="checkbox">
                                 <input type="checkbox" id="settings-richPresence"
-                                       data-bind="checked: $parent.settings.settings.plugins.discordupload.rich_presence_enabled">
+                                       data-bind="checked: $parent.settings.settings.plugins.discordbot.rich_presence_enabled">
                                 {{ _('Zobrazovat detailní statistiky v Discord aktivitě (automatická aktualizace)') }}
                             </label>
                             <span class="help-block">
@@ -224,7 +224,7 @@
                         <label class="control-label" for="settings-presenceInterval">{{ _('Interval aktualizace') }}</label>
                         <div class="controls">
                             <input type="number" class="input-mini" id="settings-presenceInterval" min="1" max="300"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.presence_update_interval">
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.presence_update_interval">
                             <span class="help-inline">{{ _('sekund (1-300, výchozí 1s)') }}</span>
                         </div>
                     </div>
@@ -236,7 +236,7 @@
                         <label class="control-label" for="settings-jogDist">{{ _('Jog vzdálenost') }}</label>
                         <div class="controls">
                             <input type="number" class="input-small" id="settings-jogDist" min="0.1" max="500" step="0.1"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.jog_distance">
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.jog_distance">
                             <span class="help-inline">{{ _('mm - výchozí vzdálenost pro posun os') }}</span>
                         </div>
                     </div>
@@ -245,7 +245,7 @@
                         <label class="control-label" for="settings-extrudeLen">{{ _('Délka extrude') }}</label>
                         <div class="controls">
                             <input type="number" class="input-small" id="settings-extrudeLen" min="0.1" max="1000" step="0.1"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.extrude_length">
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.extrude_length">
                             <span class="help-inline">{{ _('mm - výchozí délka extrudování') }}</span>
                         </div>
                     </div>
@@ -254,7 +254,7 @@
                         <label class="control-label" for="settings-extrudeSpeed">{{ _('Rychlost extrude') }}</label>
                         <div class="controls">
                             <input type="number" class="input-small" id="settings-extrudeSpeed" min="1" max="500"
-                                   data-bind="value: $parent.settings.settings.plugins.discordupload.extrude_speed">
+                                   data-bind="value: $parent.settings.settings.plugins.discordbot.extrude_speed">
                             <span class="help-inline">{{ _('mm/min - výchozí rychlost extrudování') }}</span>
                         </div>
                     </div>

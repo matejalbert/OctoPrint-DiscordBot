@@ -1,5 +1,5 @@
 $(function () {
-    function DiscordUploadViewModel(parameters) {
+    function DiscordBotViewModel(parameters) {
         var self = this;
         self.settingsViewModel = parameters[0];
 
@@ -41,7 +41,7 @@ $(function () {
         };
 
         self.onBeforeBinding = function () {
-            var profiles = self.settingsViewModel.settings.plugins.discordupload.preheat_profiles;
+            var profiles = self.settingsViewModel.settings.plugins.discordbot.preheat_profiles;
             var raw = profiles();
             var converted = [];
             for (var i = 0; i < raw.length; i++) {
@@ -93,7 +93,7 @@ $(function () {
             self.botStatusClass("alert-info");
 
             $.ajax({
-                url: API_BASEURL + "plugin/discordupload",
+                url: API_BASEURL + "plugin/discordbot",
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ command: "test_bot" }),
@@ -128,7 +128,7 @@ $(function () {
             self.botStatusClass("alert-info");
 
             $.ajax({
-                url: API_BASEURL + "plugin/discordupload",
+                url: API_BASEURL + "plugin/discordbot",
                 type: "POST",
                 contentType: "application/json",
                 data: JSON.stringify({ command: "restart_bot" }),
@@ -155,8 +155,8 @@ $(function () {
     }
 
     OCTOPRINT_VIEWMODELS.push({
-        construct: DiscordUploadViewModel,
+        construct: DiscordBotViewModel,
         dependencies: ["settingsViewModel"],
-        elements: ["#settings_plugin_discordupload"],
+        elements: ["#settings_plugin_discordbot"],
     });
 });

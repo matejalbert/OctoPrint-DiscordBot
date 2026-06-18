@@ -912,7 +912,7 @@ class DiscordBot:
             return
 
         embed = discord.Embed(
-            title=":robot: Discord Upload - Nápověda",
+            title=":robot: Discord Bot - Nápověda",
             description="Ovládej svou 3D tiskárnu přes Discord!",
             color=discord.Color.blue(),
         )

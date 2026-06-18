@@ -1,10 +1,10 @@
 # coding=utf-8
 from setuptools import setup
 
-plugin_identifier = "discordupload"
-plugin_package = "octoprint_discordupload"
-plugin_name = "OctoPrint Discord Upload"
-plugin_version = "0.1.1"
+plugin_identifier = "discordbot"
+plugin_package = "octoprint_discordbot"
+plugin_name = "OctoPrint Discord Bot"
+plugin_version = "0.1.2"
 plugin_description = "Ovládejte svou 3D tiskárnu přes Discord - nahrávejte soubory, spouštějte tisk a sledujte stav"
 plugin_author = "matejalbert"
 plugin_author_email = "matejalbert@users.noreply.github.com"
