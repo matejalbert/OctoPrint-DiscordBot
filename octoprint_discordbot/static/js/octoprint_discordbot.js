@@ -23,6 +23,7 @@ $(function () {
         };
 
         self.preheatProfiles = ko.observableArray([]);
+        self._loadingProfiles = false;
 
         self._makeProfile = function (data) {
             var obs = {
@@ -40,26 +41,38 @@ $(function () {
             return obs;
         };
 
-        self.onBeforeBinding = function () {
+        self._loadPreheatProfiles = function () {
+            if (self._loadingProfiles) return;
+            self._loadingProfiles = true;
             var profiles = self.settingsViewModel.settings.plugins.discordbot.preheat_profiles;
             var raw = profiles();
             var converted = [];
             for (var i = 0; i < raw.length; i++) {
                 converted.push(self._makeProfile(raw[i]));
             }
-            self.preheatProfiles(converted);
+            if (converted.length === 0) {
+                var defaults = [
+                    { name: "PLA", hotend_temp: 210, bed_temp: 60 },
+                    { name: "ABS", hotend_temp: 240, bed_temp: 100 },
+                    { name: "PETG", hotend_temp: 235, bed_temp: 80 },
+                    { name: "TPU", hotend_temp: 220, bed_temp: 60 },
+                    { name: "ASA", hotend_temp: 250, bed_temp: 95 },
+                    { name: "PC", hotend_temp: 270, bed_temp: 105 },
+                ];
+                profiles(defaults);
+            } else {
+                self.preheatProfiles(converted);
+            }
+        };
 
-            self.preheatProfiles.subscribe(function (newVal) {
-                var plain = [];
-                for (var i = 0; i < newVal.length; i++) {
-                    plain.push({
-                        name: ko.unwrap(newVal[i].name),
-                        hotend_temp: ko.unwrap(newVal[i].hotend_temp),
-                        bed_temp: ko.unwrap(newVal[i].bed_temp),
-                    });
-                }
-                profiles(plain);
-            });
+        self.onBeforeBinding = function () {
+            self._loadPreheatProfiles();
+        };
+
+        self.onTabSwitched = function (newTab) {
+            if (newTab === 3 && !self._loadingProfiles) {
+                self._loadPreheatProfiles();
+            }
         };
 
         self.addPreheatProfile = function () {
@@ -81,6 +94,19 @@ $(function () {
             ];
             self.preheatProfiles(defaults);
         };
+
+        self.preheatProfiles.subscribe(function (newVal) {
+            var profiles = self.settingsViewModel.settings.plugins.discordbot.preheat_profiles;
+            var plain = [];
+            for (var i = 0; i < newVal.length; i++) {
+                plain.push({
+                    name: ko.unwrap(newVal[i].name),
+                    hotend_temp: ko.unwrap(newVal[i].hotend_temp),
+                    bed_temp: ko.unwrap(newVal[i].bed_temp),
+                });
+            }
+            profiles(plain);
+        });
 
         self.botStatusText = ko.observable("Neznámý stav");
         self.botStatusClass = ko.observable("alert-info");
