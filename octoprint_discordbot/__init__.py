@@ -40,6 +40,10 @@ class DiscordBotPlugin(
         self._logger.info("Discord Bot Plugin starting...")
         self._start_bot()
 
+    def on_settings_initialized(self):
+        self._logger.info("Discord Bot Plugin settings initialized")
+        self._start_bot()
+
     def on_shutdown(self):
         self._stop_bot()
 
